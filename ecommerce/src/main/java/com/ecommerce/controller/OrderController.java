@@ -5,7 +5,6 @@ import com.ecommerce.entity.OrderDetail;
 import com.ecommerce.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,24 +31,6 @@ public class OrderController {
         return orderService.getOrdersByCustomerId(customerId);
     }
 
-    @GetMapping("/{orderId}")
-    public ResponseEntity<Order> getOrderById(@PathVariable Integer orderId, Authentication authentication) {
-        Optional<Order> order = orderService.getOrderById(orderId);
-        if (order.isPresent() && order.get().getCustomer().getUser().getUserName().equals(authentication.getName())) {
-            return ResponseEntity.ok(order.get());
-        }
-        return ResponseEntity.status(403).build(); // Forbidden if not the owner's order
-    }
-
-    @GetMapping("/{orderId}/details")
-    public ResponseEntity<List<OrderDetail>> getOrderDetailsByOrderId(@PathVariable Integer orderId, Authentication authentication) {
-        Optional<Order> order = orderService.getOrderById(orderId);
-        if (order.isPresent() && order.get().getCustomer().getUser().getUserName().equals(authentication.getName())) {
-            List<OrderDetail> orderDetails = orderService.getOrderDetailsByOrderId(orderId);
-            return ResponseEntity.ok(orderDetails);
-        }
-        return ResponseEntity.status(403).build(); // Forbidden if not the owner's order
-    }
 
     @PutMapping("/customer/{customerId}/{orderId}")
     public ResponseEntity<Order> updateOrderForCustomer(

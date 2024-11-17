@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,8 +43,7 @@ public class ProductController {
     @PostMapping("/shop/{shopId}")
     public ResponseEntity<Product> createProductForShop(
             @PathVariable Integer shopId,
-            @RequestBody Product product,
-            Authentication authentication) {
+            @RequestBody Product product) {
         // Ensure the authenticated user is adding a product to their own shop
         Product createdProduct = productService.createProductForShop(shopId, product);
         return ResponseEntity.ok(createdProduct);
@@ -55,8 +53,8 @@ public class ProductController {
     public ResponseEntity<Product> updateProductForShop(
             @PathVariable Integer shopId,
             @PathVariable Integer productId,
-            @RequestBody Product productDetails,
-            Authentication authentication) {
+            @RequestBody Product productDetails
+            ) {
         // Ensure the authenticated user is updating a product of their own shop
         Product updatedProduct = productService.updateProductForShop(shopId, productId, productDetails);
         return ResponseEntity.ok(updatedProduct);
@@ -65,8 +63,7 @@ public class ProductController {
     @DeleteMapping("/shop/{shopId}/{productId}")
     public ResponseEntity<Void> deleteProductForShop(
             @PathVariable Integer shopId,
-            @PathVariable Integer productId,
-            Authentication authentication) {
+            @PathVariable Integer productId) {
         // Ensure the authenticated user is deleting a product from their own shop
         productService.deleteProductForShop(shopId, productId);
         return ResponseEntity.noContent().build();
