@@ -2,9 +2,11 @@ package com.ecommerce.service;
 
 
 import com.ecommerce.entity.Manager;
+import com.ecommerce.entity.Role;
 import com.ecommerce.entity.User;
 import com.ecommerce.exception.ResourceNotFoundException;
 import com.ecommerce.repository.ManagerRepository;
+import com.ecommerce.repository.RoleRepository;
 import com.ecommerce.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,9 @@ public class ManagerService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     // Lấy tất cả managers
     public List<Manager> getAllManagers() {
@@ -36,6 +41,8 @@ public class ManagerService {
 
         // Nếu user chưa có trong database, tạo mới user
         if (user.getUserId() == null) {
+            Role role = roleRepository.findByRoleName("Role_Mânger")
+                    .orElseThrow(() -> new ResourceNotFoundException("Role 'Role_Manager' not found"));
             user = userRepository.save(user);  // Tạo mới user
         } else {
             // Nếu userId đã có, kiểm tra xem user có tồn tại không

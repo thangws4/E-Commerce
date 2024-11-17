@@ -1,9 +1,11 @@
 package com.ecommerce.service;
 
 
+import com.ecommerce.entity.Role;
 import com.ecommerce.entity.Shop;
 import com.ecommerce.entity.User;
 import com.ecommerce.exception.ResourceNotFoundException;
+import com.ecommerce.repository.RoleRepository;
 import com.ecommerce.repository.ShopRepository;
 import com.ecommerce.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class ShopService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     // Lấy tất cả shops
     public List<Shop> getAllShops() {
@@ -36,6 +41,8 @@ public class ShopService {
 
         // Kiểm tra nếu User đã tồn tại hoặc chưa có thì tạo mới
         if (user.getUserId() == null) {
+            Role role = roleRepository.findByRoleName("Role_Shop")
+                    .orElseThrow(() -> new ResourceNotFoundException("Role 'Role_Shop' not found"));
             user = userRepository.save(user);  // Tạo mới User nếu chưa có ID
         } else {
             Integer userId = user.getUserId();
